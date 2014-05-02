@@ -30,7 +30,6 @@ The website will be fully responsive. I won't use Bootstrap, or that's what I ho
 The user will be able to register, login, logout and edit and delete notes. Deleting a note won't delete in permanently but will put it in something like a recycle bin. 
 
 
+**LICENSE**
 
-Other Stuff
-
-http://uncodin.github.io/bypass/
+MIT
