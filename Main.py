@@ -2,6 +2,7 @@ from flask import *
 
 from Models import *
 
+import hashlib
 
 app = Flask(__name__)
 
@@ -29,7 +30,7 @@ def login():
             if is_logged_in():
                 return redirect(url_for('notes'))
             elif request.form.get('email', None) and request.form.get('password', None):
-                user = user_exists(request.form.get('email'))
+                user = user_exists(request.form.get('email'), request.form.get('password'))
                 if user:
                     session_login(user)
                     return redirect(url_for('notes'))
@@ -51,10 +52,10 @@ def register():
             if is_logged_in():
                 return redirect(url_for('notes'))
             elif request.form.get('email', None) and request.form.get('password', None):
-                if user_exists(request.form.get('email')):
+                if email_used(request.form.get('email')):
                     return render_template('register.html', error='Email already in use')
                 else:
-                    user = User(email=request.form.get('email'), password=request.form.get('password'))
+                    user = User(email=request.form.get('email'), password=hashlib.sha512(request.form.get('password').encode()).hexdigest())
                     user.save()
                     session_login(user)
                     return redirect(url_for('notes'))
@@ -78,9 +79,16 @@ def session_login(user):
 def is_logged_in():
     return True if 'email' in session and 'id' in session else False
         
-def user_exists(email):
+def email_used(email):
     try:
         user = User.get(User.email == email)
+        return user
+    except User.DoesNotExist, e:
+        return None
+
+def user_exists(email,password):
+    try:
+        user = User.get(User.email == email, User.password == hashlib.sha512(password.encode()).hexdigest())
         return user
     except User.DoesNotExist, e:
         return None
