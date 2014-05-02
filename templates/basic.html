@@ -1,16 +1,26 @@
 <!doctype html>
 <head>
-    <title>{% block title %}{% endblock %} - Notes App</title>
-
+    <title>{% block title %}{% endblock %} - Note</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 </head>
 <body>
     
-    <p>HEADER HERE</p>
+    <header id="header" class="">
+        <span class="appLogo">Note </span><span class="contentTitle">- {{ self.title() }}</span>
+        {% if not session.logged_in %}
+        <a href="{{ url_for('login') }}">Log in</a> or <a href="{{ url_for('register') }}">Register</a>
+        {% else %}
+        <a href="{{ url_for('logout') }}">Log out</a>
+        {% endif %}
+    </header>
     <!-- Add header -->
-    {% block content %}
-    
-    {% endblock %}
+    <div id="container">
+            {% block content %}
+            {% endblock %}
+    </div>
     <!-- Add footer -->
-    <p>FOOTER HERE</p>
+    <footer id="footer"></footer>
 </body>

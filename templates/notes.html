@@ -2,4 +2,20 @@
 
 {% block title %}Your Notes{% endblock %}
 
-{% block content %}Your notes here! {% endblock %}
+{% block content %}
+<div class="formContainer">
+    <span class="contentTitle">Add a note</span>
+    <input type="text" name="noteTitle" placeholder="Title">
+    <textarea name="noteBody" placeholder="Body" rows="5"></textarea>
+    <input type="submit" value="Add note">
+</div>
+
+
+<div class="notesContainer">
+{% for note in notes %}
+    <div class="noteContainer">
+        <h2>{{ note.title }}</h2>{{ note.body }}
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

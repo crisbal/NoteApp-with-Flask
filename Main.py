@@ -16,7 +16,8 @@ def index():
 @app.route('/notes')
 def notes():
     if is_logged_in():
-        return render_template('notes.html')
+        notes = Note.select().join(User).where(User.id == session['id']).order_by(Note.last_edit.desc())
+        return render_template('notes.html', notes = notes)
     else:
         return  redirect(url_for('login'))
 
@@ -27,17 +28,15 @@ def login():
         return redirect(url_for('notes'))
 
     if request.method == 'POST':
-            if is_logged_in():
+        if request.form.get('email', None) and request.form.get('password', None):
+            user = user_exists(request.form.get('email'), request.form.get('password'))
+            if user:
+                session_login(user)
                 return redirect(url_for('notes'))
-            elif request.form.get('email', None) and request.form.get('password', None):
-                user = user_exists(request.form.get('email'), request.form.get('password'))
-                if user:
-                    session_login(user)
-                    return redirect(url_for('notes'))
-                else:
-                    return render_template('login.html', error='Wrong email or password')
             else:
-                render_template('login.html', error='Email or password missing')
+                return render_template('login.html', error='Wrong email or password')
+        else:
+            render_template('login.html', error='Email or password missing')
     else:
         return render_template('login.html')
 
@@ -48,19 +47,19 @@ def logout():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if is_logged_in():
+        return redirect(url_for('notes'))
     if request.method == 'POST':
-            if is_logged_in():
-                return redirect(url_for('notes'))
-            elif request.form.get('email', None) and request.form.get('password', None):
-                if email_used(request.form.get('email')):
-                    return render_template('register.html', error='Email already in use')
-                else:
-                    user = User(email=request.form.get('email'), password=hashlib.sha512(request.form.get('password').encode()).hexdigest())
-                    user.save()
-                    session_login(user)
-                    return redirect(url_for('notes'))
+        if request.form.get('email', None) and request.form.get('password', None):
+            if email_used(request.form.get('email')):
+                return render_template('register.html', error='Email already in use')
             else:
-                render_template('register.html', error='Email or password missing')
+                user = User(email=request.form.get('email'), password=hashlib.sha512(request.form.get('password').encode()).hexdigest())
+                user.save()
+                session_login(user)
+                return redirect(url_for('notes'))
+        else:
+            render_template('register.html', error='Email or password missing')
     else:
         return render_template('register.html')
 
@@ -72,12 +71,13 @@ def page_not_found(error):
 #FUNCTIONS
 
 def session_login(user):
+    session['logged_in']=True
     session['id'] = user.id
-    session['email'] = user.email
+    
 
 
 def is_logged_in():
-    return True if 'email' in session and 'id' in session else False
+    return True if 'logged_in' in session and 'id' in session else False
         
 def email_used(email):
     try:
