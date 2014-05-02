@@ -1,0 +1,16 @@
+<!doctype html>
+<head>
+    <title>{% block title %}{% endblock %} - Notes App</title>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    
+    <p>HEADER HERE</p>
+    <!-- Add header -->
+    {% block content %}
+    
+    {% endblock %}
+    <!-- Add footer -->
+    <p>FOOTER HERE</p>
+</body>
