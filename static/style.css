@@ -52,7 +52,7 @@ input, textarea{
     width: 100%;
 }
 
-.notesContainer{
+#notesContainer{
     text-align: center;
 }
 
@@ -67,6 +67,7 @@ input, textarea{
     background-color: white;
     border: 1px solid gray;
     border-radius: 3px;
+    word-wrap: break-word;
 }
 
 

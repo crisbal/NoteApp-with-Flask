@@ -5,17 +5,17 @@
 {% block content %}
 <div class="formContainer">
     <span class="contentTitle">Add a note</span>
-    <input type="text" name="noteTitle" placeholder="Title">
-    <textarea name="noteBody" placeholder="Body" rows="5"></textarea>
-    <input type="submit" value="Add note">
+    <form id="addNoteForm" action="{{ url_for('add_note')}}" method="post">
+        <input type="text" name="title" placeholder="Title">
+        <textarea name="body" placeholder="Body" rows="5"></textarea>
+        <input type="submit" value="Add note" id="addNote">
+    </form>
 </div>
 
 
-<div class="notesContainer">
+<div id="notesContainer">
 {% for note in notes %}
-    <div class="noteContainer">
-        <h2>{{ note.title }}</h2>{{ note.body }}
-    </div>
+    {% include "note.html" %}
 {% endfor %}
 </div>
 {% endblock %}

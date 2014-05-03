@@ -22,6 +22,23 @@ def notes():
         return  redirect(url_for('login'))
 
 
+@app.route('/notes/add',methods=['GET', 'POST'])
+def add_note():
+    if request.method == 'GET':
+        return  redirect(url_for('notes'))
+
+    if is_logged_in():
+        if request.form.get('title', None) and request.form.get('body', None):
+            title = request.form.get('title', None)
+            body = request.form.get('body', None)
+            user = User.get(User.id == session['id'])
+            note = Note.create(user = user,title = title, body = body)
+            return jsonify(status="OK", renderedNote = render_template('note.html', note = note))
+        else:
+            return jsonify(status="Wrong or missing parameters"), 400 
+    else:
+       return jsonify(status="Not logged in"), 403
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if is_logged_in():
@@ -69,6 +86,7 @@ def page_not_found(error):
 
 
 #FUNCTIONS
+
 
 def session_login(user):
     session['logged_in']=True
