@@ -4,7 +4,10 @@ from Models import *
 
 import hashlib
 
+
+
 app = Flask(__name__)
+
 
 
 #ROUTING
@@ -110,6 +113,46 @@ def user_exists(email,password):
         return user
     except User.DoesNotExist, e:
         return None
+
+
+#API ROUTING
+@app.route('/api')
+def api():
+    return "Basic overview of the api"
+
+@app.route('/api/login')
+def api_login():
+    return "Login to the api. Passing username and ashed password you get back a token that you will use in the next requests"
+
+@app.route('/api/register')
+def api_register():
+    return "Usename + hashed password. Get back the token or various errors"
+
+@app.route('/api/logout')
+def api_logout():
+    return "Invalidate the token before the expiration date"
+
+
+@app.route('/api/notes')
+def api_notes():
+    return "Return all the notes from the user with that token"
+
+@app.route('/api/add')
+def api_add_note():
+    return "Passing the token, a title and a body for the note as argument you get back a json for that note if all is ok"
+
+@app.route('/api/edit')
+def api_edit_note():
+    return "Passing the token, a title and a body and an id of the note as argument you get back a json for that note if all is ok"
+
+@app.route('/api/delete')
+def api_delete_note():
+    return "Token + id. Not really delete, just hide"
+
+@app.route('/api/forceDelete')
+def api_force_delete_note():
+    return "Token + id. Delete, for real!"
+
 
 if __name__ == '__main__':
     app.debug = True
